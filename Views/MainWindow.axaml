@@ -1,0 +1,123 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:OrbitHub.ViewModels"
+        xmlns:models="using:OrbitHub.Models"
+        x:Class="OrbitHub.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Orbit Hub"
+        Width="1100" Height="700"
+        Background="#0F1117"
+        WindowStartupLocation="CenterScreen">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <!-- ESTE ES EL ÚNICO HIJO DIRECTO DEL WINDOW -->
+    <Grid>
+        
+        <!-- ============ PANTALLA BIENVENIDA ============ -->
+        <Grid IsVisible="{Binding !HasLibrary}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="24">
+                <TextBlock Text="🛰️" FontSize="80" HorizontalAlignment="Center"/>
+                <TextBlock Text="ORBIT HUB" FontSize="48" FontWeight="Bold"
+                           Foreground="#FFFFFF" HorizontalAlignment="Center"/>
+                <TextBlock Text="Tu biblioteca. Tus juegos. Tus reglas."
+                           FontSize="18" Foreground="#8A93A6" HorizontalAlignment="Center"/>
+                <Button Content="Seleccionar Biblioteca"
+                        HorizontalAlignment="Center"
+                        Padding="32,14" FontSize="16" FontWeight="SemiBold"
+                        Background="#4F7CFF" Foreground="White"
+                        CornerRadius="10"
+                        Click="OnSelectLibraryClick"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ============ PANTALLA BIBLIOTECA ============ -->
+        <Grid IsVisible="{Binding HasLibrary}" RowDefinitions="Auto,*">
+
+            <!-- Header -->
+            <Border Grid.Row="0" Background="#161A22" Padding="24,16">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <TextBlock Text="🛰️" FontSize="24" VerticalAlignment="Center"/>
+                        <TextBlock Text="Orbit Hub" FontSize="20" FontWeight="Bold"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding LibraryPath}"
+                               Foreground="#8A93A6"
+                               VerticalAlignment="Center"
+                               Margin="24,0"/>
+
+                    <Button Grid.Column="2"
+                            Content="🔄 Reescanear"
+                            Command="{Binding RescanCommand}"
+                            Background="#252A36" Foreground="White"
+                            Padding="16,8" CornerRadius="8"
+                            Margin="0,0,8,0"/>
+
+                    <Button Grid.Column="3"
+                            Content="Cambiar Biblioteca"
+                            Background="#252A36" Foreground="White"
+                            Padding="16,8" CornerRadius="8"
+                            Click="OnSelectLibraryClick"/>
+                </Grid>
+            </Border>
+
+            <!-- Grid de juegos -->
+            <ScrollViewer Grid.Row="1" Padding="24">
+                <ItemsControl ItemsSource="{Binding Games}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:Game">
+                            <Border Width="200" Height="260"
+                                    Margin="8"
+                                    Background="#161A22"
+                                    CornerRadius="12"
+                                    ClipToBounds="True"
+                                    DoubleTapped="OnGameDoubleTapped"
+                                    Tag="{Binding}">
+
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="▶ Lanzar"
+                                                  Command="{Binding $parent[Window].DataContext.LaunchGameCommand}"
+                                                  CommandParameter="{Binding}"/>
+                                        <MenuItem Header="📁 Abrir carpeta"
+                                                  Command="{Binding $parent[Window].DataContext.OpenFolderCommand}"
+                                                  CommandParameter="{Binding}"/>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
+
+                                <StackPanel>
+                                    <Border Height="180" Background="#252A36">
+                                        <TextBlock Text="🎮" FontSize="56"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Margin="12" Spacing="4">
+                                        <TextBlock Text="{Binding Name}"
+                                                   Foreground="White"
+                                                   FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="Doble clic para jugar"
+                                                   Foreground="#8A93A6"
+                                                   FontSize="11"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+    </Grid>
+</Window>

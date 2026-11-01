@@ -1,0 +1,10 @@
+OrbitHub/
+├── Models/
+│   └── Game.cs
+├── Services/
+│   └── LibraryService.cs
+├── ViewModels/
+│   ├── ViewModelBase.cs
+│   └── MainWindowViewModel.cs
+├── Views/
+│   └── MainWindow.axaml (+ .axaml.cs)
