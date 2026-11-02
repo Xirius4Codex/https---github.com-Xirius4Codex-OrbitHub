@@ -1,16 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    
-    <!-- Ignorar avisos de compatibilidad de System.Drawing -->
-    <NoWarn>CA1416</NoWarn> 
-  </PropertyGroup>
+  <OutputType>WinExe</OutputType>
+  <TargetFramework>net8.0-windows</TargetFramework>
+  <Nullable>enable</Nullable>
+  <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+  <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  <ApplicationManifest>app.manifest</ApplicationManifest>
+  <UseWPF>true</UseWPF> 
+  <NoWarn>CA1416</NoWarn> 
+</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.1.4" />
