@@ -57,7 +57,6 @@ public class LibraryService
             var gameName = Path.GetFileName(folder);
             var coverPath = FindCoverImage(folder);
 
-            // Si no hay imagen local, usamos el extractor de alta resolución
             if (coverPath is null)
             {
                 coverPath = IconExtractor.ExtractHighQualityIcon(exe, gameName);
@@ -73,6 +72,25 @@ public class LibraryService
         }
 
         return games.OrderBy(g => g.Name).ToList();
+    }
+
+    public string CopyImageToCache(string sourceImagePath, string gameName)
+    {
+        try
+        {
+            Directory.CreateDirectory(CoversDir);
+            var ext = Path.GetExtension(sourceImagePath);
+            var safeName = string.Concat(gameName.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
+            var destPath = Path.Combine(CoversDir, $"{safeName}_custom{ext}");
+            
+            File.Copy(sourceImagePath, destPath, true);
+            return destPath;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error copiando imagen: {ex.Message}");
+            return sourceImagePath;
+        }
     }
 
     private static string? FindMainExecutable(string folder)
@@ -113,7 +131,6 @@ public class LibraryService
 
 // =====================================================================
 // CLASE AUXILIAR PARA EXTRAER ICONOS DE ALTA RESOLUCIÓN (256x256)
-// Usa la API nativa de Windows (IShellItemImageFactory)
 // =====================================================================
 public static class IconExtractor
 {
@@ -168,7 +185,6 @@ public static class IconExtractor
 
             if (File.Exists(iconPath)) return iconPath;
 
-            // Solicitar icono de 256x256
             var size = new SIZE(256, 256);
             var iid = typeof(IShellItemImageFactory).GUID;
             
@@ -177,7 +193,6 @@ public static class IconExtractor
 
             if (hBitmap == IntPtr.Zero) return null;
 
-            // Convertir el HBITMAP a un archivo PNG
             var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
                 hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
 

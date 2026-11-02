@@ -14,9 +14,10 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <!-- Aquí registramos nuestro convertidor de rutas a imágenes -->
     <Window.Resources>
         <views:PathToImageConverter x:Key="PathToImageConverter"/>
+        <views:BoolToTabColorConverter x:Key="TabBgConverter"/>
+        <views:BoolToTabTextColorConverter x:Key="TabFgConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -43,31 +44,52 @@
 
             <!-- Header -->
             <Border Grid.Row="0" Background="#161A22" Padding="24,16">
-                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <TextBlock Text="🛰️" FontSize="24" VerticalAlignment="Center"/>
-                        <TextBlock Text="Orbit Hub" FontSize="20" FontWeight="Bold"
-                                   Foreground="White" VerticalAlignment="Center"/>
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="16">
+                    
+                    <!-- Fila 1: Logo, Buscador y Botones -->
+                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBlock Text="🛰️" FontSize="24" VerticalAlignment="Center"/>
+                            <TextBlock Text="Orbit Hub" FontSize="20" FontWeight="Bold"
+                                       Foreground="White" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SearchText, Mode=TwoWay}"
+                                 PlaceholderText="🔍 Buscar juego..."
+                                 Background="#252A36" Foreground="White"
+                                 BorderThickness="0" CornerRadius="8"
+                                 Padding="12,8" Margin="24,0"
+                                 VerticalAlignment="Center"/>
+
+                        <Button Grid.Column="2"
+                                Content="🔄 Reescanear"
+                                Command="{Binding RescanCommand}"
+                                Background="#252A36" Foreground="White"
+                                Padding="16,8" CornerRadius="8"
+                                Margin="0,0,8,0"/>
+
+                        <Button Grid.Column="3"
+                                Content="Cambiar Biblioteca"
+                                Background="#252A36" Foreground="White"
+                                Padding="16,8" CornerRadius="8"
+                                Click="OnSelectLibraryClick"/>
+                    </Grid>
+
+                    <!-- Fila 2: Pestañas -->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8">
+                        <Button Content="🎮 Todos los juegos" 
+                                Command="{Binding ShowAllCommand}"
+                                Padding="16,8" CornerRadius="8"
+                                Background="{Binding !ShowFavoritesOnly, Converter={StaticResource TabBgConverter}}"
+                                Foreground="{Binding !ShowFavoritesOnly, Converter={StaticResource TabFgConverter}}"/>
+
+                        <Button Content="⭐ Favoritos" 
+                                Command="{Binding ShowFavoritesCommand}"
+                                Padding="16,8" CornerRadius="8"
+                                Background="{Binding ShowFavoritesOnly, Converter={StaticResource TabBgConverter}}"
+                                Foreground="{Binding ShowFavoritesOnly, Converter={StaticResource TabFgConverter}}"/>
                     </StackPanel>
-
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding LibraryPath}"
-                               Foreground="#8A93A6"
-                               VerticalAlignment="Center"
-                               Margin="24,0"/>
-
-                    <Button Grid.Column="2"
-                            Content="🔄 Reescanear"
-                            Command="{Binding RescanCommand}"
-                            Background="#252A36" Foreground="White"
-                            Padding="16,8" CornerRadius="8"
-                            Margin="0,0,8,0"/>
-
-                    <Button Grid.Column="3"
-                            Content="Cambiar Biblioteca"
-                            Background="#252A36" Foreground="White"
-                            Padding="16,8" CornerRadius="8"
-                            Click="OnSelectLibraryClick"/>
                 </Grid>
             </Border>
 
@@ -82,7 +104,8 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:Game">
-                            <Border Width="200" Height="260"
+                            <!-- TARJETA FORMATO PÓSTER (220x330) -->
+                            <Border Width="220" Height="330"
                                     Margin="8"
                                     Background="#161A22"
                                     CornerRadius="12"
@@ -98,25 +121,51 @@
                                         <MenuItem Header="📁 Abrir carpeta"
                                                   Command="{Binding $parent[Window].DataContext.OpenFolderCommand}"
                                                   CommandParameter="{Binding}"/>
+                                        <!-- NUEVO: Cambiar Carátula -->
+                                        <MenuItem Header="🖼️ Cambiar Carátula"
+                                                  Click="OnChangeCoverClick"/>
                                     </ContextMenu>
                                 </Border.ContextMenu>
 
-                                <StackPanel>
-                                    <!-- ZONA DE LA IMAGEN -->
-                                    <Panel Height="180" Background="#252A36">
-                                        <!-- Imagen (si CoverPath no es null, el convertidor la carga) -->
+                                <Grid RowDefinitions="280,*,Auto">
+                                    
+                                    <!-- ZONA DE LA IMAGEN (Ahora 280px de alto) -->
+                                    <Panel Grid.Row="0" Background="#252A36">
                                         <Image Source="{Binding CoverPath, Converter={StaticResource PathToImageConverter}}" 
                                                Stretch="UniformToFill"
                                                IsVisible="{Binding CoverPath, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                                         
-                                        <!-- Emoji de respaldo (si CoverPath es null) -->
-                                        <TextBlock Text="🎮" FontSize="56"
+                                        <TextBlock Text="🎮" FontSize="80"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
                                                    IsVisible="{Binding CoverPath, Converter={x:Static ObjectConverters.IsNull}}"/>
                                     </Panel>
 
-                                    <StackPanel Margin="12" Spacing="4">
+                                    <!-- BOTÓN DE ESTRELLA -->
+                                    <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                            Margin="8"
+                                            Background="#80000000" 
+                                            Padding="8,4" CornerRadius="50"
+                                            Command="{Binding $parent[Window].DataContext.ToggleFavoriteCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Button.Styles>
+                                            <Style Selector="Button">
+                                                <Setter Property="Content" Value="☆"/>
+                                                <Setter Property="Foreground" Value="#8A93A6"/>
+                                                <Setter Property="FontSize" Value="20"/>
+                                            </Style>
+                                            <Style Selector="Button[Tag=True]">
+                                                <Setter Property="Content" Value="★"/>
+                                                <Setter Property="Foreground" Value="Gold"/>
+                                            </Style>
+                                        </Button.Styles>
+                                        <Button.Tag>
+                                            <Binding Path="IsFavorite" />
+                                        </Button.Tag>
+                                    </Button>
+
+                                    <!-- TEXTO -->
+                                    <StackPanel Grid.Row="1" Margin="12,12,12,4" Spacing="4">
                                         <TextBlock Text="{Binding Name}"
                                                    Foreground="White"
                                                    FontWeight="SemiBold"
@@ -125,7 +174,8 @@
                                                    Foreground="#8A93A6"
                                                    FontSize="11"/>
                                     </StackPanel>
-                                </StackPanel>
+                                    
+                                </Grid>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
