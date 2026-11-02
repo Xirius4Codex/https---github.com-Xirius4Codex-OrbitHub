@@ -1,0 +1,26 @@
+OrbitHub mejorado - fuente para Windows 11
+
+ATENCION: Este ZIP contiene CODIGO FUENTE, no un EXE recompilado.
+
+CAMBIOS:
+- Copia de seguridad y escritura segura de biblioteca JSON.
+- Escaneo limitado a 3 niveles para reducir esperas y evitar herramientas auxiliares.
+- Seleccion de ejecutable mejorada; excluye instaladores y desinstaladores.
+- Escaneo en segundo plano para evitar congelar la interfaz.
+- Directorio de trabajo del EXE corregido.
+- Icono OrbitHub integrado en el proyecto.
+
+COMPILAR:
+1. Instala .NET SDK 8 en Windows.
+2. Abre PowerShell en la carpeta del proyecto.
+3. Ejecuta:
+   dotnet restore
+   dotnet publish OrbitHub.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
+4. El EXE estara en publish/OrbitHub.exe.
+
+Tambien se incluye .github/workflows/build-windows.yml para compilarlo
+mediante GitHub Actions en Windows, si subes estos archivos a un repositorio.
+
+LIMITACIONES: no se pudo ejecutar ni compilar en este entorno. Las integraciones
+nativas con Steam/Epic/GOG y varias carpetas todavia no estan implementadas.
+Haz copia de seguridad de tu biblioteca antes de probar esta version.

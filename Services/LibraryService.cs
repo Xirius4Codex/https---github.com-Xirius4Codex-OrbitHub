@@ -32,7 +32,18 @@ public class LibraryService
             LibraryPath = data?.LibraryPath;
             return data?.Games ?? new List<Game>();
         }
-        catch { return new List<Game>(); }
+        catch
+        {
+            try
+            {
+                var backup = LibraryFile + ".bak";
+                if (!File.Exists(backup)) return new List<Game>();
+                var data = JsonSerializer.Deserialize<LibraryData>(File.ReadAllText(backup));
+                LibraryPath = data?.LibraryPath;
+                return data?.Games ?? new List<Game>();
+            }
+            catch { return new List<Game>(); }
+        }
     }
 
     public void Save(string libraryPath, List<Game> games)
@@ -40,7 +51,15 @@ public class LibraryService
         Directory.CreateDirectory(AppDataDir);
         var data = new LibraryData { LibraryPath = libraryPath, Games = games };
         var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(LibraryFile, json);
+        // Atomic replacement and backup to protect the library from partial writes.
+        var temp = LibraryFile + ".tmp";
+        File.WriteAllText(temp, json);
+        if (File.Exists(LibraryFile))
+        {
+            File.Copy(LibraryFile, LibraryFile + ".bak", true);
+            File.Move(temp, LibraryFile, true);
+        }
+        else File.Move(temp, LibraryFile);
         LibraryPath = libraryPath;
     }
 
@@ -49,9 +68,11 @@ public class LibraryService
         var games = new List<Game>();
         if (!Directory.Exists(libraryPath)) return games;
 
-        foreach (var folder in Directory.GetDirectories(libraryPath))
+        foreach (var folder in Directory.EnumerateDirectories(libraryPath))
         {
-            var exe = FindMainExecutable(folder);
+            string? exe;
+            try { exe = FindMainExecutable(folder); }
+            catch (Exception ex) { Console.WriteLine($"Error escaneando {folder}: {ex.Message}"); continue; }
             if (exe is null) continue;
 
             var gameName = Path.GetFileName(folder);
@@ -95,15 +116,37 @@ public class LibraryService
 
     private static string? FindMainExecutable(string folder)
     {
-        var exes = Directory.GetFiles(folder, "*.exe", SearchOption.AllDirectories);
-        if (exes.Length == 0) return null;
-
+        // Avoid scanning deep caches, redistributables, installers and unrelated tools.
+        var candidates = new List<string>();
+        var queue = new Queue<(string path, int depth)>();
+        queue.Enqueue((folder, 0));
+        while (queue.Count > 0 && candidates.Count < 250)
+        {
+            var (path, depth) = queue.Dequeue();
+            try
+            {
+                candidates.AddRange(Directory.EnumerateFiles(path, "*.exe").Take(40));
+                if (depth >= 3) continue;
+                foreach (var dir in Directory.EnumerateDirectories(path))
+                {
+                    var name = Path.GetFileName(dir).ToLowerInvariant();
+                    if (name is "redist" or "_commonredist" or "redistributables" or "installer" or "installers" or "cache" or "crashreporter" or "support" or "tools") continue;
+                    queue.Enqueue((dir, depth + 1));
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+            catch (IOException) { }
+        }
         var folderName = Path.GetFileName(folder);
-        var match = exes.FirstOrDefault(e =>
-            Path.GetFileNameWithoutExtension(e)
-                .Equals(folderName, StringComparison.OrdinalIgnoreCase));
-
-        return match ?? exes[0];
+        var ranked = candidates.Select(exe => new
+        {
+            Path = exe,
+            Score = (Path.GetFileNameWithoutExtension(exe).Equals(folderName, StringComparison.OrdinalIgnoreCase) ? 100 : 0)
+                  + (Path.GetDirectoryName(exe)!.Equals(folder, StringComparison.OrdinalIgnoreCase) ? 20 : 0)
+                  - (new[] { "setup", "install", "unins", "crash", "report", "config", "launcherhelper", "updater", "unitycrash" }
+                    .Any(s => Path.GetFileName(exe).Contains(s, StringComparison.OrdinalIgnoreCase)) ? 200 : 0)
+        }).OrderByDescending(x => x.Score).ToList();
+        return ranked.Count == 0 || ranked[0].Score < 0 ? null : ranked[0].Path;
     }
 
     private static string? FindCoverImage(string folder)

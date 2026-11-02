@@ -62,8 +62,8 @@ public partial class MainWindowViewModel : ViewModelBase
         LibraryPath = path;
 
         var scanned = _library.ScanLibrary(path);
-        _allGames.Clear();
-        foreach (var g in scanned) _allGames.Add(g);
+        Games.Clear();
+        foreach (var g in scanned) Games.Add(g);
 
         _library.Save(path, scanned);
         HasLibrary = true;
@@ -73,12 +73,14 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Rescan()
+    private async Task Rescan()
     {
         if (string.IsNullOrEmpty(LibraryPath)) return;
+
         var scanned = _library.ScanLibrary(LibraryPath);
-        _allGames.Clear();
-        foreach (var g in scanned) _allGames.Add(g);
+        Games.Clear();
+        foreach (var g in scanned) Games.Add(g);
+
         _library.Save(LibraryPath, scanned);
         UpdateFilteredGames();
     }
@@ -105,7 +107,12 @@ public partial class MainWindowViewModel : ViewModelBase
         if (!System.IO.File.Exists(game.ExecutablePath)) return;
         try
         {
-            Process.Start(new ProcessStartInfo { FileName = game.ExecutablePath, WorkingDirectory = game.FolderPath, UseShellExecute = true });
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = game.ExecutablePath,
+                WorkingDirectory = game.FolderPath,
+                UseShellExecute = true
+            });
         }
         catch (Exception ex) { Console.WriteLine($"Error al lanzar: {ex.Message}"); }
     }
