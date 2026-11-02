@@ -44,7 +44,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var path = folders[0].Path.LocalPath;
         LibraryPath = path;
 
-        var scanned = _library.ScanLibrary(path);
+        var scanned = await Task.Run(() => _library.ScanLibrary(path));
         Games.Clear();
         foreach (var g in scanned) Games.Add(g);
 
@@ -53,11 +53,11 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void Rescan()
+    private async Task Rescan()
     {
         if (string.IsNullOrEmpty(LibraryPath)) return;
 
-        var scanned = _library.ScanLibrary(LibraryPath);
+        var scanned = await Task.Run(() => _library.ScanLibrary(LibraryPath));
         Games.Clear();
         foreach (var g in scanned) Games.Add(g);
 
@@ -75,7 +75,7 @@ public partial class MainWindowViewModel : ViewModelBase
             Process.Start(new ProcessStartInfo
             {
                 FileName = game.ExecutablePath,
-                WorkingDirectory = game.FolderPath,
+                WorkingDirectory = System.IO.Path.GetDirectoryName(game.ExecutablePath) ?? game.FolderPath,
                 UseShellExecute = true
             });
         }

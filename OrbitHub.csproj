@@ -7,7 +7,8 @@
   <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   <ApplicationManifest>app.manifest</ApplicationManifest>
-  <UseWPF>true</UseWPF> 
+  <UseWPF>true</UseWPF>
+  <ApplicationIcon>Assets\OrbitHub.ico</ApplicationIcon> 
   <NoWarn>CA1416</NoWarn> 
 </PropertyGroup>
 
