@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:OrbitHub.ViewModels"
         xmlns:models="using:OrbitHub.Models"
+        xmlns:views="using:OrbitHub.Views"
         x:Class="OrbitHub.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="Orbit Hub"
@@ -13,7 +14,11 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <!-- ESTE ES EL ÚNICO HIJO DIRECTO DEL WINDOW -->
+    <!-- Aquí registramos nuestro convertidor de rutas a imágenes -->
+    <Window.Resources>
+        <views:PathToImageConverter x:Key="PathToImageConverter"/>
+    </Window.Resources>
+
     <Grid>
         
         <!-- ============ PANTALLA BIENVENIDA ============ -->
@@ -97,11 +102,20 @@
                                 </Border.ContextMenu>
 
                                 <StackPanel>
-                                    <Border Height="180" Background="#252A36">
+                                    <!-- ZONA DE LA IMAGEN -->
+                                    <Panel Height="180" Background="#252A36">
+                                        <!-- Imagen (si CoverPath no es null, el convertidor la carga) -->
+                                        <Image Source="{Binding CoverPath, Converter={StaticResource PathToImageConverter}}" 
+                                               Stretch="UniformToFill"
+                                               IsVisible="{Binding CoverPath, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                        
+                                        <!-- Emoji de respaldo (si CoverPath es null) -->
                                         <TextBlock Text="🎮" FontSize="56"
                                                    HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
-                                    </Border>
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{Binding CoverPath, Converter={x:Static ObjectConverters.IsNull}}"/>
+                                    </Panel>
+
                                     <StackPanel Margin="12" Spacing="4">
                                         <TextBlock Text="{Binding Name}"
                                                    Foreground="White"

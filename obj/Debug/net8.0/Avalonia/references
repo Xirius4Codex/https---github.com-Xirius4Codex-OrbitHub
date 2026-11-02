@@ -33,6 +33,7 @@ C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\Micro
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\Microsoft.VisualBasic.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\Microsoft.Win32.Primitives.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\Microsoft.Win32.Registry.dll
+C:\Users\blood\.nuget\packages\microsoft.win32.systemevents\8.0.0\lib\net8.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\mscorlib.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\netstandard.dll
 C:\Users\blood\.nuget\packages\skiasharp\3.119.4\ref\net6.0\SkiaSharp.dll
@@ -66,6 +67,7 @@ C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\Syste
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\System.Diagnostics.TraceSource.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\System.Diagnostics.Tracing.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\System.dll
+C:\Users\blood\.nuget\packages\system.drawing.common\8.0.0\lib\net8.0\System.Drawing.Common.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\System.Drawing.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\System.Drawing.Primitives.dll
 C:\Users\blood\.nuget\packages\microsoft.netcore.app.ref\8.0.33\ref\net8.0\System.Dynamic.Runtime.dll

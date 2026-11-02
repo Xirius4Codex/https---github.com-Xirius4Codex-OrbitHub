@@ -1,8 +1,12 @@
 using Avalonia.Controls;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using OrbitHub.Models;
 using OrbitHub.ViewModels;
+using System;
+using System.Globalization;
+using System.IO;
 
 namespace OrbitHub.Views;
 
@@ -20,7 +24,6 @@ public partial class MainWindow : Window
             await vm.SelectLibraryAsync(this);
     }
 
-    // 👇 CAMBIO AQUÍ: sender es "object" en lugar de "object?"
     private void OnGameDoubleTapped(object sender, TappedEventArgs e)
     {
         if (sender is Border { Tag: Game game } && DataContext is MainWindowViewModel vm)
@@ -28,5 +31,29 @@ public partial class MainWindow : Window
             vm.LaunchGameCommand.Execute(game);
             e.Handled = true;
         }
+    }
+}
+
+public class PathToImageConverter : IValueConverter
+{
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is string path && !string.IsNullOrEmpty(path) && File.Exists(path))
+        {
+            try
+            {
+                return new Avalonia.Media.Imaging.Bitmap(path);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "2TkNDFtP9jU=",
+  "dgSpecHash": "VEZDrVbGQCk=",
   "success": true,
   "projectFilePath": "C:\\Users\\blood\\OrbitHub\\OrbitHub.csproj",
   "expectedPackageFiles": [
@@ -29,11 +29,13 @@
     "C:\\Users\\blood\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\microsoft.io.recyclablememorystream\\3.0.1\\microsoft.io.recyclablememorystream.3.0.1.nupkg.sha512",
+    "C:\\Users\\blood\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0\\microsoft.win32.systemevents.8.0.0.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\skiasharp\\3.119.4\\skiasharp.3.119.4.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\skiasharp.nativeassets.linux\\3.119.4\\skiasharp.nativeassets.linux.3.119.4.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\skiasharp.nativeassets.macos\\3.119.4\\skiasharp.nativeassets.macos.3.119.4.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\3.119.4\\skiasharp.nativeassets.webassembly.3.119.4.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\skiasharp.nativeassets.win32\\3.119.4\\skiasharp.nativeassets.win32.3.119.4.nupkg.sha512",
+    "C:\\Users\\blood\\.nuget\\packages\\system.drawing.common\\8.0.0\\system.drawing.common.8.0.0.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\tmds.dbus.protocol\\0.94.1\\tmds.dbus.protocol.0.94.1.nupkg.sha512",
     "C:\\Users\\blood\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.33\\microsoft.netcore.app.ref.8.0.33.nupkg.sha512",
