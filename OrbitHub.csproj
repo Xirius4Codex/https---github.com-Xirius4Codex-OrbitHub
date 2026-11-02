@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+  <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
   <OutputType>WinExe</OutputType>
   <TargetFramework>net8.0-windows</TargetFramework>
   <Nullable>enable</Nullable>
