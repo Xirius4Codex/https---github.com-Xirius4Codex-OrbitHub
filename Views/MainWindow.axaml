@@ -20,8 +20,27 @@
         <views:BoolToTabTextColorConverter x:Key="TabFgConverter"/>
     </Window.Resources>
 
+    <!-- CONTENEDOR PRINCIPAL (ÚNICO HIJO DEL WINDOW) -->
     <Grid>
         
+        <!-- ============ PANTALLA DE CARGA (SPLASH SCREEN) ============ -->
+        <Grid IsVisible="{Binding IsLoading}" Background="#0F1117">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="24">
+                <!-- Imagen del Splash -->
+                <Image Source="/Assets/splash.png" 
+                       Width="400" 
+                       Stretch="Uniform" 
+                       HorizontalAlignment="Center"/>
+                
+                <!-- Barra de progreso animada -->
+                <ProgressBar IsIndeterminate="True" Width="300" Height="8" 
+                             Foreground="#4F7CFF" Background="#252A36"
+                             CornerRadius="4" Margin="0,20,0,0"/>
+                
+                <TextBlock Text="Cargando biblioteca..." FontSize="14" Foreground="#8A93A6" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
         <!-- ============ PANTALLA BIENVENIDA ============ -->
         <Grid IsVisible="{Binding !HasLibrary}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="24">
@@ -54,6 +73,7 @@
                                        Foreground="White" VerticalAlignment="Center"/>
                         </StackPanel>
 
+                        <!-- BUSCADOR -->
                         <TextBox Grid.Column="1"
                                  Text="{Binding SearchText, Mode=TwoWay}"
                                  PlaceholderText="🔍 Buscar juego..."
@@ -121,7 +141,6 @@
                                         <MenuItem Header="📁 Abrir carpeta"
                                                   Command="{Binding $parent[Window].DataContext.OpenFolderCommand}"
                                                   CommandParameter="{Binding}"/>
-                                        <!-- NUEVO: Cambiar Carátula -->
                                         <MenuItem Header="🖼️ Cambiar Carátula"
                                                   Click="OnChangeCoverClick"/>
                                     </ContextMenu>
@@ -129,7 +148,7 @@
 
                                 <Grid RowDefinitions="280,*,Auto">
                                     
-                                    <!-- ZONA DE LA IMAGEN (Ahora 280px de alto) -->
+                                    <!-- ZONA DE LA IMAGEN (280px de alto) -->
                                     <Panel Grid.Row="0" Background="#252A36">
                                         <Image Source="{Binding CoverPath, Converter={StaticResource PathToImageConverter}}" 
                                                Stretch="UniformToFill"

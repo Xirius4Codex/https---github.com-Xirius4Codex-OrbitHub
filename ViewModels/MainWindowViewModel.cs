@@ -20,12 +20,24 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string _libraryPath = "";
     [ObservableProperty] private string _searchText = "";
     [ObservableProperty] private bool _showFavoritesOnly;
+    
+    // Variable para la pantalla de carga
+    [ObservableProperty] private bool _isLoading = true; 
 
     private readonly ObservableCollection<Game> _allGames = new();
     public ObservableCollection<Game> Games { get; } = new();
 
     public MainWindowViewModel()
     {
+        // Iniciamos la carga en segundo plano
+        _ = InitializeAsync();
+    }
+
+    private async Task InitializeAsync()
+    {
+        // Simulamos un pequeño retraso de 2.5 segundos para que se vea el Splash
+        await Task.Delay(2500);
+
         var saved = _library.LoadSavedGames();
         if (saved.Count > 0)
         {
@@ -34,6 +46,9 @@ public partial class MainWindowViewModel : ViewModelBase
             HasLibrary = true;
             UpdateFilteredGames();
         }
+
+        // Terminamos la carga
+        IsLoading = false;
     }
 
     partial void OnSearchTextChanged(string value) => UpdateFilteredGames();
@@ -62,8 +77,8 @@ public partial class MainWindowViewModel : ViewModelBase
         LibraryPath = path;
 
         var scanned = _library.ScanLibrary(path);
-        Games.Clear();
-        foreach (var g in scanned) Games.Add(g);
+        _allGames.Clear();
+        foreach (var g in scanned) _allGames.Add(g);
 
         _library.Save(path, scanned);
         HasLibrary = true;
@@ -73,14 +88,12 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task Rescan()
+    private void Rescan()
     {
         if (string.IsNullOrEmpty(LibraryPath)) return;
-
         var scanned = _library.ScanLibrary(LibraryPath);
-        Games.Clear();
-        foreach (var g in scanned) Games.Add(g);
-
+        _allGames.Clear();
+        foreach (var g in scanned) _allGames.Add(g);
         _library.Save(LibraryPath, scanned);
         UpdateFilteredGames();
     }
@@ -107,12 +120,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (!System.IO.File.Exists(game.ExecutablePath)) return;
         try
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = game.ExecutablePath,
-                WorkingDirectory = game.FolderPath,
-                UseShellExecute = true
-            });
+            Process.Start(new ProcessStartInfo { FileName = game.ExecutablePath, WorkingDirectory = game.FolderPath, UseShellExecute = true });
         }
         catch (Exception ex) { Console.WriteLine($"Error al lanzar: {ex.Message}"); }
     }
@@ -138,6 +146,6 @@ public partial class MainWindowViewModel : ViewModelBase
         game.CoverPath = cachedPath;
         
         _library.Save(LibraryPath, _allGames.ToList());
-        UpdateFilteredGames(); // Refrescar para que la imagen cambie al instante
+        UpdateFilteredGames();
     }
 }
