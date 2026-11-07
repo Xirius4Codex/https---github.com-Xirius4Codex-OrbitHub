@@ -1,0 +1,15 @@
+- [x] Escaneo básico de biblioteca.
+- [x] Extracción de iconos en HD.
+- [x] Buscador de juegos en tiempo real.
+- [x] Sistema de favoritos.
+- [x] Cambio manual de carátula.
+- [x] Vista de póster vertical.
+- [x] Efecto Hover en tarjetas.
+- [x] Ordenación A-Z / Z-A.
+- [x] Pantalla de carga (Splash Screen).
+- [ ] Contador de horas jugadas (Estadísticas).
+- [ ] Menú de ajustes (Temas de colores, tamaño de tarjetas).
+- [ ] Categorías y etiquetas personalizadas.
+- [ ] Múltiples bibliotecas (Steam, Emuladores, etc).
+- [ ] **Chat de amigos (Requiere backend en tiempo real: SignalR o Supabase).** 💬
+- [ ] Soporte para temas de colores (Premium).
