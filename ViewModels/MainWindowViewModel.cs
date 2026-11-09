@@ -24,7 +24,6 @@ public partial class MainWindowViewModel : ViewModelBase
     
     [ObservableProperty] private bool _isLoading = true; 
 
-    // NUEVA PROPIEDAD: Controla cuándo mostrar la pantalla de bienvenida
     public bool ShowWelcomeScreen => !IsLoading && !HasLibrary;
 
     private readonly ObservableCollection<Game> _allGames = new();
@@ -51,7 +50,6 @@ public partial class MainWindowViewModel : ViewModelBase
         IsLoading = false;
     }
 
-    // NOTIFICACIONES PARA ACTUALIZAR LA UI
     partial void OnIsLoadingChanged(bool value) => OnPropertyChanged(nameof(ShowWelcomeScreen));
     partial void OnHasLibraryChanged(bool value) => OnPropertyChanged(nameof(ShowWelcomeScreen));
 
@@ -133,14 +131,32 @@ public partial class MainWindowViewModel : ViewModelBase
         UpdateFilteredGames();
     }
 
+    // MODIFICADO: Ahora es async Task para esperar a que el juego se cierre
     [RelayCommand]
-    private void LaunchGame(Game? game)
+    private async Task LaunchGame(Game? game)
     {
         if (game is null || string.IsNullOrEmpty(game.ExecutablePath)) return;
         if (!System.IO.File.Exists(game.ExecutablePath)) return;
+
         try
         {
-            Process.Start(new ProcessStartInfo { FileName = game.ExecutablePath, WorkingDirectory = game.FolderPath, UseShellExecute = true });
+            var process = Process.Start(new ProcessStartInfo 
+            { 
+                FileName = game.ExecutablePath, 
+                WorkingDirectory = game.FolderPath, 
+                UseShellExecute = true 
+            });
+
+            if (process != null)
+            {
+                await Task.Run(() => process.WaitForExit());
+
+                var elapsed = process.ExitTime - process.StartTime;
+                game.TimePlayedMinutes += elapsed.TotalMinutes;
+
+                _library.Save(LibraryPath, _allGames.ToList());
+                UpdateFilteredGames();
+            }
         }
         catch (Exception ex) { Console.WriteLine($"Error al lanzar: {ex.Message}"); }
     }

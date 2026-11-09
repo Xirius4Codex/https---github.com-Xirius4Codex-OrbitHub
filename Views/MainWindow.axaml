@@ -38,7 +38,6 @@
         </Grid>
 
         <!-- ============ PANTALLA BIENVENIDA ============ -->
-        <!-- Cambiado a ShowWelcomeScreen -->
         <Grid IsVisible="{Binding ShowWelcomeScreen}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="24">
                 <TextBlock Text="🛰️" FontSize="80" HorizontalAlignment="Center"/>
@@ -200,6 +199,7 @@
                                         </Button.Tag>
                                     </Button>
 
+                                    <!-- TEXTO Y TIEMPO JUGADO -->
                                     <StackPanel Grid.Row="1" Margin="12,12,12,4" Spacing="4">
                                         <TextBlock Text="{Binding Name}"
                                                    Foreground="White"
@@ -208,6 +208,12 @@
                                         <TextBlock Text="Doble clic para jugar"
                                                    Foreground="#8A93A6"
                                                    FontSize="11"/>
+                                        <!-- NUEVA LÍNEA DEL TIEMPO -->
+                                        <TextBlock Text="{Binding TimePlayedDisplay}"
+                                                   Foreground="#4F7CFF"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   Margin="0,4,0,0"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
